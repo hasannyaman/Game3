@@ -1,0 +1,1371 @@
+import java.io.*;
+import java.util.*;
+// this program generates board game for a player and computer
+public class HY2015400207 {
+	public static void main(String[] args) throws FileNotFoundException {
+		Scanner console=new Scanner(System.in); // to take input from a user
+		File f=new File("input.txt");
+		Scanner input=new Scanner(f);
+		System.out.println("Welcome to my game.");
+		System.out.println("Do you want to play new game or play a ongoing game?Please write N for new game, O for ongoing game.");
+		String ans=console.nextLine(); //to take choice of user
+		boolean a1=true;
+		while(a1) { //to check user's input is valid or not
+			if(!(ans.equalsIgnoreCase("N") || ans.equalsIgnoreCase("O"))) { // if input is invalid,it will ask again
+				System.out.println("Invalid answer, please write again!");
+				ans=console.next();
+			} else { 						//if input is valid, it stops the while loop.
+				a1=false;
+			}
+		}
+		System.out.println("You will be X player, and computer will be O player.");
+		if(ans.equalsIgnoreCase("N")) { //if a user wants to start new game, newGame method will work
+			String[] ar0={"B","B","B","B","B","B"}; // first line of default board
+			String[] ar1={"B","B","B","B","B","B"}; // second line of default board
+			String[] ar2={"B","B","B","B","B","B"}; // third line of default board
+			String[] ar3={"B","B","B","B","B","B"}; // fourth line of default board
+			String[] ar4={"B","B","B","B","B","B"}; // fifth line of default board
+			String[] ar5={"B","B","B","B","B","B"}; // sixth line of default board
+			newGame(ar0,ar1,ar2, ar3,ar4,ar5);
+		} 
+		else if(ans.equalsIgnoreCase("O")) {  //if a user wants to continue a ongoing game, default board will be taken from file and newGame method will work	
+			String[] ar00=new String[6]; // first line of given board
+			String[] ar10=new String[6]; // second line of given board
+			String[] ar20=new String[6]; // third line of given board
+			String[] ar30=new String[6]; // fourth line of given board
+			String[] ar40=new String[6]; // fifth line of given board
+			String[] ar50=new String[6]; // sixth line of given board
+			String firstline=input.nextLine(); //to take first line of given input
+			ar00[0]=firstline.substring(0,1);  
+			ar00[1]=firstline.substring(1,2);
+			ar00[2]=firstline.substring(2,3);
+			ar00[3]=firstline.substring(3,4);
+			ar00[4]=firstline.substring(4,5);
+			ar00[5]=firstline.substring(5);
+			String secondline=input.nextLine(); //to take second line of given input
+			ar10[0]=secondline.substring(0,1);
+			ar10[1]=secondline.substring(1,2);
+			ar10[2]=secondline.substring(2,3);
+			ar10[3]=secondline.substring(3,4);
+			ar10[4]=secondline.substring(4,5);
+			ar10[5]=secondline.substring(5);
+			String thirdline=input.nextLine(); //to take third line of given input
+			ar20[0]=thirdline.substring(0,1);
+			ar20[1]=thirdline.substring(1,2);
+			ar20[2]=thirdline.substring(2,3);
+			ar20[3]=thirdline.substring(3,4);
+			ar20[4]=thirdline.substring(4,5);
+			ar20[5]=thirdline.substring(5);
+			String fourthline=input.nextLine(); //to take fourth line of given input
+			ar30[0]=fourthline.substring(0, 1);
+			ar30[1]=fourthline.substring(1, 2);
+			ar30[2]=fourthline.substring(2, 3);
+			ar30[3]=fourthline.substring(3, 4);
+			ar30[4]=fourthline.substring(4, 5);
+			ar30[5]=fourthline.substring(5);
+			String fifthline=input.nextLine(); //to take fifth line of given input
+			ar40[0]=fifthline.substring(0, 1);
+			ar40[1]=fifthline.substring(1, 2);
+			ar40[2]=fifthline.substring(2, 3);
+			ar40[3]=fifthline.substring(3, 4);
+			ar40[4]=fifthline.substring(4, 5);
+			ar40[5]=fifthline.substring(5);    //to take sixth line of given input
+			String sixthline=input.nextLine();
+			ar50[0]=sixthline.substring(0, 1);
+			ar50[1]=sixthline.substring(1, 2);
+			ar50[2]=sixthline.substring(2, 3);
+			ar50[3]=sixthline.substring(3, 4);
+			ar50[4]=sixthline.substring(4, 5);
+			ar50[5]=sixthline.substring(5);
+			newGame(ar00,ar10,ar20,ar30,ar40,ar50);  //call newGame method with given lines.
+		}
+	}
+	// this method enable to play game until a user or computer wins.
+	public static void newGame(String[] ar0, String[] ar1, String[] ar2, String[] ar3,String[] ar4, String[] ar5) {
+		Scanner console=new Scanner(System.in); // to take a user's actions and coordinates
+		System.out.println("Default board:");
+		print(ar0,ar1,ar2,ar3,ar4,ar5);      //print default board
+		boolean a=true;
+		boolean b=true;
+		while(a && b) {   // continue game until a user or computer wins 
+			System.out.println("Select your action, C for change action, M for move action:");
+			String act=console.next();
+			boolean test1=true;
+			while(test1) {      //to check if user's action choice is valid or not
+				if(!(act.equalsIgnoreCase("C") || act.equalsIgnoreCase("M"))) { // to ask again,if action choice is invalid
+					System.out.println("Invalid action, please rewrite correct action: ");  
+					act=console.nextLine();
+				} else {     //to stop while loop, if user's input is valid 
+					test1=false;
+				}
+			}
+			System.out.println("Write your coordinates: ");
+			int x1=0;
+			int y1=0;
+			int x2=0;
+			int y2=0;
+			boolean test2=true;
+			while(test2) {  // to check user's coordinates is valid or not
+				if(act.equalsIgnoreCase("C")) {
+					x1=console.nextInt();
+					y1=console.nextInt();
+					if((x1>5 || y1>5 || x1<0 || y1<0)) { 			// to ask again if coordinates is invalid
+						System.out.println("Invalid coordinates, please rewrite coordinates: ");						
+					} else if(!(checkCoordinate(ar0,ar1,ar2,ar3,ar4,ar5,x1,y1))) {
+						System.out.println("Invalid coordinates, please rewrite coordinates: ");
+					}
+					else {      //to stop while loop, if user's input is valid 
+						test2=false;
+					}
+				} else if(act.equalsIgnoreCase("M")) {
+					x1=console.nextInt();
+					y1=console.nextInt();
+					x2=console.nextInt();
+					y2=console.nextInt();
+					if(x1>5 || y1>5 || x1<0 || y1<0 || x2>5 || y2>5 || x2<0 || y2<0) {// to ask again if coordinates is invalid
+						System.out.println("Invalid coordinates, please rewrite coordinates: ");
+					}else if(!(checkCoordinateMove(ar0,ar1,ar2,ar3,ar4,ar5,x1,y1,x2,y2))) {
+						System.out.println("Invalid coordinates, please rewrite coordinates: ");
+					} else {
+						test2=false;
+					}
+				}
+			}
+			if(act.equalsIgnoreCase("C")) { // to call ChangeAction method if user want to change
+				ChangeAction(ar0,ar1,ar2,ar3,ar4,ar5,x1,y1);
+				System.out.println("Board configuration: ");
+			}
+			if(act.equalsIgnoreCase("M")) { //to call one of the move method if user to move
+				if(y1==y2) {
+					MoveActionHorizontal(ar0,ar1,ar2,ar3,ar4,ar5,x1,y1,x2,y2);
+					System.out.println("Board configuration");
+				} else if(x1==x2) {
+					MoveActionVertical(ar0,ar1,ar2,ar3,ar4,ar5,x1,y1,x2,y2);
+					System.out.println("Board configuration");
+				} 
+			}
+			print(ar0,ar1,ar2,ar3,ar4,ar5); //to print current configuration
+			if(control(ar0,ar1,ar2,ar3,ar4,ar5)) { // to control a user is winner or not
+				a=false; //if user is winner, it prevents computer move and stops game
+			} else {
+				a=true; //if user is not winner, it maintains game and allows computer action
+			}
+			boolean control=check_B(ar0,ar1,ar2,ar3,ar4,ar5);
+			boolean cont2=false;
+			if(a) { // if user is winner computer will not take an action
+				System.out.println("Computer turn!;");
+				if(is5X(ar0,ar1,ar2,ar3,ar4,ar5)) {
+					ComputerFirstChange(ar0,ar1,ar2,ar3,ar4,ar5);
+				} else if(control) {//if no 5 X in any line or column program checks suitable blanks in the outer shell									
+					cont2=ComputerChangeAction(ar0,ar1,ar2,ar3,ar4,ar5,x1,y1); 
+				} else if(!cont2) { //if computer make change action, it prevents to make move action
+					ComputerMoveActionVertical(ar0,ar1,ar2,ar3,ar4,ar5);
+				}
+				System.out.println("Board configuration: ");
+				print(ar0,ar1,ar2,ar3,ar4,ar5);
+				if(controlSecond(ar0,ar1,ar2,ar3,ar4,ar5)) { // to check computer is winner or not
+					b=false;   //if computer is winner stops game
+				} else {
+					b=true;
+				}
+			}
+		}
+		System.out.println("Thank you for playing this game!");
+	}
+	// for change action,to check a user can play game from given coordinates or not
+	public static boolean checkCoordinate(String[] ar0, String[] ar1, String[] ar2, String[] ar3,String[] ar4, String[] ar5,int x1,int y1) {
+		String s1;
+		if(x1==0) {
+			s1=ar0[y1];
+			return s1.equalsIgnoreCase("B");
+		}
+		if(x1==1) {
+			s1=ar1[y1];
+			if(y1==0 || y1==5) {
+				return s1.equalsIgnoreCase("B");
+			}
+		}
+		if(x1==2) {
+			s1=ar2[y1];
+			if(y1==0 || y1==5) {
+				return s1.equalsIgnoreCase("B");
+			}
+		}
+		if(x1==3) {
+			s1=ar3[y1];
+			if(y1==0 || y1==5) {
+				return s1.equalsIgnoreCase("B");
+			}
+		}
+		if(x1==4) {
+			s1=ar4[y1];
+			if(y1==0 || y1==5) {
+				return s1.equalsIgnoreCase("B");
+			}
+		}
+		if(x1==5) {
+			s1=ar5[y1];
+			return s1.equalsIgnoreCase("B");
+		}
+		return false;
+	}
+	//for move action,to check a user can play game from given coordinates or not
+	public static boolean checkCoordinateMove(String[] ar0, String[] ar1, String[] ar2, String[] ar3,String[] ar4, String[] ar5,int x1,int y1, int x2, int y2 ) {
+		if(x1!=x2 && y1!=y2) {
+			return false;
+		}
+		if(x1==0) {
+			return ar0[y1].equals("X");
+		}
+		if(x1==1) {
+			if(y1==0 || y1==5) {
+				return ar1[y1].equals("X");
+			}
+		}
+		if(x1==2) {
+			if(y1==0 || y1==5) {
+				return ar2[y1].equals("X");
+			}
+		}
+		if(x1==3) {
+			if(y1==0 | y1==5) {
+				return ar3[y1].equals("X");
+			}
+		}
+		if(x1==4) {
+			if(y1==0 || y1==5) {
+				return ar4[y1].equals("X");
+			}
+		}
+		if(x1==5) {
+			return ar5[y1].equals("X");
+		}
+		return false;
+	}
+	//this method checks whether there is suitable blank for computer change in the uter shell
+	public static boolean check_B(String[] ar0, String[] ar1, String[] ar2, String[] ar3,String[] ar4, String[] ar5) {
+		for(int i=0;i<=5;i++) {      //to check first line
+			if(ar0[i].equals("B")) {
+				return true;
+			}
+		}
+		for(int i=0;i<=5;i++) {     //to check sixth line
+			if(ar5[i].equals("B")) {
+				return true;
+			}
+		}
+		//the rest if statements check outer shell expect first and sixth lines
+		if(ar1[0].equals("B")) {   
+			return true;
+		}
+		if(ar1[5].equals("B")) {
+			return true;
+		}
+		if(ar2[0].equals("B")) {
+			return true;
+		}
+		if(ar2[5].equals("B")) {
+			return true;
+		}
+		if(ar3[0].equals("B")) {
+			return true;
+		}
+		if(ar3[5].equals("B")) {
+			return true;
+		}
+		if(ar4[0].equals("B")) {
+			return true;
+		}
+		if(ar4[5].equals("B")) {
+			return true;
+		}
+
+		return false;
+	}
+	//this method switch B with X
+	public static void ChangeAction(String[] ar0, String[] ar1, String[] ar2, String[] ar3,String[] ar4, String[] ar5, int x1,int y1) {
+		if(x1==0) {
+			ar0[y1]="X";
+		}
+		if(x1==1) {
+			ar1[y1]="X";
+		}
+		if(x1==2) {
+			ar2[y1]="X";
+		}
+		if(x1==3) {
+			ar3[y1]="X";
+		}
+		if(x1==4) {
+			ar4[y1]="X";
+		}
+		if(x1==5) {
+			ar5[y1]="X";
+		}
+	}
+	//to make vertical move action 
+	public static void MoveActionVertical(String[] ar0, String[] ar1, String[] ar2, String[] ar3,String[] ar4, String[] ar5, int x1,int y1, int x2, int y2) {
+		String a="";
+		if(x1==0) {
+			if(y1==0) {
+				if(y2==5) {   
+					a=ar0[y1];   //take a character which is slid
+					for(int i=0;i<5;i++) {  // to slide other characters
+						ar0[i]=ar0[i+1];
+					}
+					ar0[5]=a;	// to add character which was slid
+				} 
+			} else if(y1==5) {
+				if(y2==0) {
+					a=ar0[y1];
+					for(int i=5;i>0;i--) {
+						ar0[i]=ar0[i-1];
+					}
+					ar0[0]=a;
+				} 
+			} 
+		}
+		if(x1==1) {
+			if(y1==0) {
+				if( y2==5) {
+					a=ar1[y1];
+					for(int i=0;i<5;i++) {
+						ar1[i]=ar1[i+1];
+					}
+					ar1[5]=a;
+				} 
+			} else if(y1==5) {
+				if(x2==1 && y2==0) {
+					a=ar1[y1];
+					for(int i=5;i>0;i--) {
+						ar1[i]=ar1[i-1];
+					}
+					ar1[0]=a;
+				} 
+			} 
+		}
+		if(x1==2) {
+			if(y1==0) {
+				if( y2==5) {
+					a=ar2[y1];
+					for(int i=0;i<5;i++) {
+						ar2[i]=ar2[i+1];
+					}
+					ar2[5]=a;	
+				} 
+			} else if(y1==5) {
+				if(y2==0) {
+					a=ar2[y1];
+					for(int i=5;i>0;i--) {
+						ar2[i]=ar2[i-1];
+					}
+					ar2[0]=a;
+				} 
+			} 
+		}
+		if(x1==3) {
+			if(y1==0) {
+				if(y2==5) {
+					a=ar3[y1];
+					for(int i=0;i<5;i++) {
+						ar3[i]=ar3[i+1];
+					}
+					ar3[5]=a;	
+				} 
+			} else if(y1==5)  {
+				if(y2==0) {
+					a=ar3[y1];
+					for(int i=5;i>0;i--) {
+						ar3[i]=ar3[i-1];
+					}
+					ar3[0]=a;
+				} 
+			} 
+		}
+		if(x1==4) {
+			if(y1==0) {
+				if(y2==5) {
+					a=ar4[y1];
+					for(int i=0;i<5;i++) {
+						ar4[i]=ar4[i+1];
+					}
+					ar4[5]=a;	
+				} 
+			} else if(y1==5) {
+				if(y2==0) {
+					a=ar4[y1];
+					for(int i=5;i>0;i--) {
+						ar4[i]=ar4[i-1];
+					}
+					ar4[0]=a;
+				} 
+			} 
+		}
+		if(x1==5) {
+			if(y1==0) {
+				if(y2==5) {
+					a=ar5[y1];
+					for(int i=0;i<5;i++) {
+						ar5[i]=ar5[i+1];
+					}
+					ar3[5]=a;	
+				} 
+			} else if(y1==5) {
+				if(y2==0) {
+					a=ar5[y1];
+					for(int i=5;i>0;i--) {
+						ar5[i]=ar5[i-1];
+					}
+					ar5[0]=a;
+				} 
+			} 
+		}
+	}
+	// to make horizontal move action
+	public static void MoveActionHorizontal(String[] ar0, String[] ar1, String[] ar2, String[] ar3,String[] ar4, String[] ar5, int x1,int y1, int x2, int y2) {
+		String a="";
+		if(y1==0) {
+			if(x1==0) {
+				if(x2==5) {
+					a=ar0[0];     //take a character which is slid
+					ar0[0]=ar1[0];  // to slide other characters
+					ar1[0]=ar2[0];
+					ar2[0]=ar3[0];
+					ar3[0]=ar4[0];
+					ar4[0]=ar5[0];
+					ar5[0]=a;		// to add character which was slid
+				} 
+
+			} else if(x1==5) {
+				if(x2==0) {
+					a=ar5[0];
+					ar5[0]=ar4[0];
+					ar4[0]=ar3[0];
+					ar3[0]=ar2[0];
+					ar2[0]=ar1[0];
+					ar1[0]=ar0[0];
+					ar0[0]=a;
+				} 
+			}
+		}
+		if(y1==1) {
+			if(x1==0) {
+				if(x2==5) {
+					a=ar0[1];
+					ar0[1]=ar1[1];
+					ar1[1]=ar2[1];
+					ar2[1]=ar3[1];
+					ar3[1]=ar4[1];
+					ar4[1]=ar5[1];
+					ar5[1]=a;
+				} 
+			} else if(x1==5) {
+				if(x2==0) {
+					a=ar5[1];
+					ar5[1]=ar4[1];
+					ar4[1]=ar3[1];
+					ar3[1]=ar2[1];
+					ar2[1]=ar1[1];
+					ar1[1]=ar0[1];
+					ar0[1]=a;
+				}
+			}
+		}
+		if(y1==2) {
+			if(x1==0) {
+				if(x2==5) {
+					a=ar0[2];
+					ar0[2]=ar1[2];
+					ar1[2]=ar2[2];
+					ar2[2]=ar3[2];
+					ar3[2]=ar4[2];
+					ar4[2]=ar5[2];
+					ar5[2]=a;
+				} 
+			} else if(x1==5) {
+				if(x2==0) {
+					a=ar5[2];
+					ar5[2]=ar4[2];
+					ar4[2]=ar3[2];
+					ar3[2]=ar2[2];
+					ar2[2]=ar1[2];
+					ar1[2]=ar0[2];
+					ar0[2]=a;
+				} 
+			}
+		}
+		if(y1==3) {
+			if(x1==0) {
+				if(x2==5) {
+					a=ar0[3];
+					ar0[3]=ar1[3];
+					ar1[3]=ar2[3];
+					ar2[3]=ar3[3];
+					ar3[3]=ar4[3];
+					ar4[3]=ar5[3];
+					ar5[3]=a;
+				} 
+			} else if(x1==5)  {
+				if(x2==0) {
+					a=ar5[3];
+					ar5[3]=ar4[3];
+					ar4[3]=ar3[3];
+					ar3[3]=ar2[3];
+					ar2[3]=ar1[3];
+					ar1[3]=ar0[3];
+					ar0[3]=a;
+				} 
+			}
+		}
+		if(y1==4) {
+			if(x1==0) {
+				if(x2==5) {
+					a=ar0[4];
+					ar0[4]=ar1[4];
+					ar1[4]=ar2[4];
+					ar2[4]=ar3[4];
+					ar3[4]=ar4[4];
+					ar4[4]=ar5[4];
+					ar5[4]=a;
+				} 
+			} else if(x1==5) {
+				if(x2==0) {
+					a=ar5[4];
+					ar5[4]=ar4[4];
+					ar4[4]=ar3[4];
+					ar3[4]=ar2[4];
+					ar2[4]=ar1[4];
+					ar1[4]=ar0[4];
+					ar0[4]=a;
+				}
+			}
+		}
+		if(y1==5) {
+			if(x1==0) {
+				if(x2==5) {
+					a=ar0[5];
+					ar0[5]=ar1[5];
+					ar1[5]=ar2[5];
+					ar2[5]=ar3[5];
+					ar3[5]=ar4[5];
+					ar4[5]=ar5[5];
+					ar5[5]=a;
+				} 
+			} else if(x1==5) {
+				if(x2==0) {
+					a=ar5[5];
+					ar5[5]=ar4[5];
+					ar4[5]=ar3[5];
+					ar3[5]=ar2[5];
+					ar2[5]=ar1[5];
+					ar1[5]=ar0[5];
+					ar0[5]=a;
+				}
+			}
+		}
+	}
+	//this method do change action in the outer shell
+	public static boolean ComputerChangeAction(String[] ar0, String[] ar1, String[] ar2, String[] ar3,String[] ar4, String[] ar5, int x1,int y1) {
+		boolean isChanged=false; //it keeps whether any change action is done or not.
+		int count=0;
+		boolean test=true;
+		if(y1==1) {
+			if(x1==0) {
+				while(test && count<=5) {
+					if(count!=y1 && ar0[count].equals("B")) {
+						ar0[count]="O";
+						isChanged=true;
+						test=false;  //if there are any change, it stops while loop 	
+					}else {
+						count++; //it allows to check coordinates respectively.
+					}
+				}
+			} else if(x1==5) {
+				test=true;
+				count=0;
+				while(test && count<=5) {
+					if(count!=y1 && ar5[count].equals("B")) {
+						ar5[count]="O";
+						isChanged=true;
+						test=false;
+					}else {
+						count++;
+					}
+				}
+			}
+		}
+		if(y1==2) {
+			if(x1==0) {
+				while(test && count<=5) {
+					if(count!=y1 && ar0[count].equals("B")) {
+						ar0[count]="O";
+						isChanged=true;
+						test=false;
+					}else {
+						count++;
+					}
+				}
+			} else if(x1==5) {
+				test=true;
+				count=0;
+				while(test && count<=5) {
+					if(count!=y1 && ar5[count].equals("B")) {
+						ar5[count]="O";
+						isChanged=true;
+						test=false;
+					}else {
+						count++;
+					}
+				}
+			}
+		}
+		if(y1==3) {
+			if(x1==0) {
+				while(test && count<=5) {
+					if(count!=y1 && ar0[count].equals("B")) {
+						ar0[count]="O";
+						isChanged=true;
+						test=false;
+					}else {
+						count++;
+					}
+				}
+			} else if(x1==5) {
+				test=true;
+				count=0;
+				while(test && count<=5) {
+					if(count!=y1 && ar5[count].equals("B")) {
+						ar5[count]="O";
+						isChanged=true;
+						test=false;
+					}else {
+						count++;
+					}
+				}
+			}
+		}
+		if(y1==4) {
+			if(x1==0) {
+				while(test && count<=5) {
+					if(count!=y1 && ar0[count].equals("B")) {
+						ar0[count]="O";
+						isChanged=true;
+						test=false;
+					}else {
+						count++;
+					}
+				}
+			} else if(x1==5) {
+				test=true;
+				count=0;
+				while(test && count<=5) {
+					if(count!=y1 && ar5[count].equals("B")) {
+						ar5[count]="O";
+						isChanged=true;
+						test=false;
+					}else {
+						count++;
+					}
+				}
+			}
+		}
+		if(y1==0) {
+			test=true;
+			count=0;
+			if(x1==0) {
+				while(test && count<=5) {
+					if(count!=y1 && ar0[count].equals("B")) {
+						ar0[count]="O";
+						isChanged=true;
+						test=false;
+					}else {
+						count++;
+					}
+				}	
+			} else if(x1==5) {
+				while(test && count<=5) {
+					if(count!=y1 && ar5[count].equals("B")) {
+						ar5[count]="O";
+						isChanged=true;
+						test=false;
+					}else {
+						count++;
+					}
+				}
+			}  
+			if(test){
+				isChanged=VerticalChangeComputer(ar0,ar1,ar2,ar3,ar4,ar5,x1,y1);
+			}
+		}
+		if(y1==5) {
+			test=true;
+			count=0;
+			if(x1==0) {
+				while(test && count<=5) {
+					if(count!=y1 && ar0[count].equals("B")) {
+						ar0[count]="O";
+						isChanged=true;
+						test=false;
+					}else {
+						count++;
+					}
+				}	
+			} else if(x1==5) {
+				while(test && count<=5) {
+					if(count!=y1 && ar5[count].equals("B")) {
+						ar5[count]="O";
+						isChanged=true;
+						test=false;
+					}else {
+						count++;
+					}
+				}
+			}  
+			if(test){
+				isChanged=VerticalChangeComputer(ar0,ar1,ar2,ar3,ar4,ar5,x1,y1);	
+			}
+		}
+		return isChanged;
+	}
+	//this method do  change action
+	public static boolean VerticalChangeComputer(String[] ar0, String[] ar1, String[] ar2, String[] ar3,String[] ar4, String[] ar5,int x1,int y1) {
+		//besides, this method returns whether any change is done or not
+		if(ar1[y1].equals("B")){
+			ar1[y1]="O";
+			return true;
+		} else if(ar0[y1].equals("B")) {
+			ar0[y1]="O";
+			return true;
+		} else if(ar2[y1].equals("B")) {
+			ar2[y1]="O";
+			return true;
+		} else if(ar3[y1].equals("B")) {
+			ar3[y1]="O";
+			return true;
+		} else if(ar4[y1].equals("B")) {
+			ar4[y1]="O";
+			return true;
+		} else if(ar5[y1].equals("B")) {
+			ar5[y1]="O";
+			return true;
+		}
+		return false; 
+	}
+	//this method only work when there are 5 X in a column or line, and blocks victory of a user by changing-if there is any suitable- from B to O in the column or line which have 5 X
+	public static boolean ComputerFirstChange(String[] ar0, String[] ar1, String[] ar2, String[] ar3,String[] ar4, String[] ar5) {
+		int count=0;
+		for(int i=0;i<=5;i++){  //to counts number of X in first line
+			if(ar0[i].equals("X")) {
+				count++;
+			}
+		}
+		if(count>=5) {
+			for(int i=0;i<=5;i++) { //to check any suitable place for change action for first line
+				if(ar0[i].equals("B")) {
+					ar0[i]="O";    //to change suitable place with O
+					return true;
+				}
+			}
+
+		}
+		System.out.println("bunu okuyorsan ilk satırda 5 tane x yoktur.");
+		count=0;
+		for(int i=0;i<=5;i++){ 			//to counts number of X in second line
+			if(ar1[i].equals("X")) {
+				count++;
+			}
+		}
+		if(count>=5) {
+			if(ar1[0].equals("B")) {	//to check any suitable place for change action for second line
+				ar1[0]="O";    //to change suitable place with O
+				return true;
+			} else if(ar1[5].equals("B")) {
+				ar1[5]="O";   //to change suitable place with O
+				return true;
+			}
+
+		}
+		count=0;
+		for(int i=0;i<=5;i++){   //to counts number of X in third line
+			if(ar2[i].equals("X")) {
+				count++;
+			}
+		}
+		if(count>=5) {
+			if(ar2[0].equals("B")) {   //to check any suitable place for change action for third line
+				ar2[0]="O";			//to change suitable place with O
+				return true;
+			} else if(ar2[5].equals("B")) {
+				ar2[5]="O";		//to change suitable place with O
+				return true;
+			}
+		}
+		count=0;
+		for(int i=0;i<=5;i++){   //to counts number of X in fourth line
+			if(ar3[i].equals("X")) {
+				count++;
+			}
+		}
+		if(count>=5) {
+			if(ar3[0].equals("B")) {   //to check any suitable place for change action for fourth line
+				ar3[0]="O";		//to change suitable place with O
+				return true;
+			} else if(ar3[5].equals("B")) {
+				ar3[5]="O";		//to change suitable place with O
+				return true;
+			}
+		}
+		count=0;
+		for(int i=0;i<=5;i++){    //to counts number of X in fifth line
+			if(ar4[i].equals("X")) {
+				count++;
+			}
+		}
+		if(count>=5) {
+			if(ar4[0].equals("B")) {  //to check any suitable place for change action for fifth line
+				ar4[0]="O";    //to change suitable place with O
+				return true;
+			} else if(ar4[5].equals("B")) {
+				ar4[5]="O";    //to change suitable place with O
+				return true;
+			}
+		}
+		count=0;
+		for(int i=0;i<=5;i++){    //to counts number of X in sixth line
+			if(ar5[i].equals("X")) {
+				count++;
+			}
+		}
+		if(count>=5) {     //to check any suitable place for change action for sixth line
+			for(int i=0;i<=5;i++) {
+				if(ar5[i].equals("B")) {
+					ar5[i]="O";   //to change suitable place with O
+					return true;
+				}
+			}
+		}
+		//In addition, to line we must to check and change  column, so we should create column arrays to check easily.
+		String[] v_ar0={ar0[0],ar1[0], ar2[0], ar3[0], ar4[0], ar5[0]};
+		String[] v_ar1={ar0[1],ar1[1], ar2[1], ar3[1], ar4[1], ar5[1]};
+		String[] v_ar2={ar0[2],ar1[2], ar2[2], ar3[2], ar4[2], ar5[2]};
+		String[] v_ar3={ar0[3],ar1[3], ar2[3], ar3[3], ar4[3], ar5[3]};
+		String[] v_ar4={ar0[4],ar1[4], ar2[4], ar3[4], ar4[4], ar5[4]};
+		String[] v_ar5={ar0[5],ar1[5], ar2[5], ar3[5], ar4[5], ar5[5]};
+		count=0;
+		for(int i=0;i<=5;i++){   //to counts numbers of X in first column
+			if(v_ar0[i].equals("X")) {
+				count++;
+			}
+		}
+		if(count>=5) {   		//to check and change if there is  any suitable place for change action for first column
+			if(ar0[0].equals("B")) {
+				ar0[0]="O";
+				return true;
+			}
+			else if(ar1[0].equals("B")) {
+				ar1[0]="O";
+				return true;
+			}
+			else if(ar2[0].equals("B")) {
+				ar2[0]="O";
+				return true;
+			}
+			else if(ar3[0].equals("B")) {
+				ar3[0]="O";
+				return true;
+			}
+			else if(ar4[0].equals("B")) {
+				ar4[0]="O";
+				return true;
+			}
+			else if(ar5[0].equals("B")) {
+				ar5[0]="O";
+				return true;
+			}	
+		}  							
+		count=0;
+		for(int i=0;i<=5;i++){					//to counts numbers of X in second column
+			if(v_ar1[i].equals("X")) {
+				count++;
+			}
+		}
+		if(count>=5) {					//to check and change if there is  any suitable place for change action for second column
+			if(v_ar1[0].equals("B")) {
+				ar0[1]="O";
+				return true;
+			} else if(v_ar1[5].equals("B")) {
+				ar5[1]="O";
+				return true;
+			}
+		}
+		count=0;	
+		for(int i=0;i<=5;i++){				//to counts numbers of X in third column
+			if(v_ar2[i].equals("X")) {
+				count++;
+			}
+		}
+		if(count>=5) {				//to check and change if there is any suitable place for change action for third column
+			if(v_ar2[0].equals("B")) {
+				ar0[2]="O";
+				return true;
+			} else if(v_ar2[5].equals("B")) {
+				ar5[2]="O";
+				return true;
+			}
+		}
+		count=0;
+		for(int i=0;i<=5;i++){						//to counts numbers of X in fourth column
+			if(v_ar3[i].equals("X")) {
+				count++;
+			}
+		}
+		if(count>=5) {					//to check and change if there is any suitable place for change action for fourth column
+			if(v_ar3[0].equals("B")) {
+				ar0[3]="O";
+				return true;
+			} else if(v_ar3[5].equals("B")) {
+				ar5[3]="O";
+				return true;
+			}
+		}
+		count=0;
+		for(int i=0;i<=5;i++){				//to counts numbers of X in fifth column
+			if(v_ar4[i].equals("X")) {
+				count++;
+			}
+		}
+		if(count>=5) {			//to check and change if there is any suitable place for change action for fifth column
+			if(v_ar4[0].equals("B")) {
+				ar0[4]="O";
+				return true;
+			} else if(v_ar4[5].equals("B")) {
+				ar5[4]="O";
+				return true;
+			}
+		}
+		count=0;
+		for(int i=0;i<=5;i++){					//to counts numbers of X in sixth column
+			if(v_ar5[i].equals("X")) {
+				count++;
+			}
+		}
+		if(count>=5) {			//to check and change if there is any suitable place for change action for sixth column
+			if(ar0[5].equals("B")) {
+				ar0[5]="O";
+				return true;
+			}
+			else if(ar1[5].equals("B")) {
+				ar1[5]="O";
+				return true;
+			}
+			else if(ar2[5].equals("B")) {
+				ar2[5]="O";
+				return true;
+			}
+			else if(ar3[5].equals("B")) {
+				ar3[5]="O";
+				return true;
+			}
+			else if(ar4[5].equals("B")) {
+				ar4[5]="O";
+				return true;
+			}
+			else if(ar5[5].equals("B")) {
+				ar5[5]="O";
+				return true;
+			}	
+		}
+		return false;
+	}
+	// this method check whether any column or line have 5 X or not.In addition, it  checks if there is a 5 X whether any B or not for computer change action
+	public static boolean is5X(String[] ar0, String[] ar1,String[] ar2,String[] ar3,String[] ar4,String[] ar5) { 
+		int count=0;
+		for(int i=0;i<=5;i++){  //to counts numbers of X in first line
+			if(ar0[i].equals("X")) {
+				count++;
+			}
+		}
+		if(count>=5) {
+			for(int i=0;i<=5;i++) { //to check if there is any suitable place for change action for first line
+				if(ar0[i].equals("B")) {
+					return true;
+				}
+			}
+
+		}		
+		count=0;
+		for(int i=0;i<=5;i++){  //to counts numbers of X in second line
+			if(ar1[i].equals("X")) {
+				count++;
+			}
+		}
+		if(count>=5) {
+			if(ar1[0].equals("B")) { //to check if there is any suitable place for change action for second line
+				return true;
+			} else if(ar1[5].equals("B")) {
+				return true;
+			}
+
+		}
+		count=0;
+		for(int i=0;i<=5;i++){ //to counts numbers of X in third line
+			if(ar2[i].equals("X")) {
+				count++;
+			}
+		}
+		if(count>=5) { //to check if there is any suitable place for change action for third line
+			if(ar2[0].equals("B")) {
+				return true;
+			} else if(ar2[5].equals("B")) {
+				return true;
+			}
+		}
+		count=0;
+		for(int i=0;i<=5;i++){ //to counts numbers of X in fourth line
+			if(ar3[i].equals("X")) {
+				count++;
+			}
+		}
+		if(count>=5) {
+			if(ar3[0].equals("B")) { //to check if there is any suitable place for change action for fourth line
+				return true;
+			} else if(ar3[5].equals("B")) {
+				return true;
+			}
+		}
+		count=0;
+		for(int i=0;i<=5;i++){ //to counts numbers of X in fifth line
+			if(ar4[i].equals("X")) {
+				count++;
+			}
+		}
+		if(count>=5) {
+			if(ar4[0].equals("B")) { //to check if there is any suitable place for change action for fifth line
+				return true;
+			} else if(ar4[5].equals("B")) {
+				return true;
+			}
+		}
+		count=0; 
+		for(int i=0;i<=5;i++){  //to counts numbers of X in sixth line
+			if(ar5[i].equals("X")) {
+				count++;
+			}
+		}
+		if(count>=5) {
+			for(int i=0;i<=5;i++) {//to check if there is any suitable place for change action for sixth line
+				if(ar5[i].equals("B")) {
+					return true;
+				}
+			}
+		}
+		//In addition, to line we must to check column, so we should create column arrays to check easily.
+		String[] v_ar0={ar0[0],ar1[0], ar2[0], ar3[0], ar4[0], ar5[0]}; //first column
+		String[] v_ar1={ar0[1],ar1[1], ar2[1], ar3[1], ar4[1], ar5[1]};	//second column	
+		String[] v_ar2={ar0[2],ar1[2], ar2[2], ar3[2], ar4[2], ar5[2]}; //third column
+		String[] v_ar3={ar0[3],ar1[3], ar2[3], ar3[3], ar4[3], ar5[3]}; //fourth column
+		String[] v_ar4={ar0[4],ar1[4], ar2[4], ar3[4], ar4[4], ar5[4]}; //fifth column
+		String[] v_ar5={ar0[5],ar1[5], ar2[5], ar3[5], ar4[5], ar5[5]}; //sixth column
+		count=0;
+		for(int i=0;i<=5;i++){   //to counts numbers of X in first column
+			if(v_ar0[i].equals("X")) {
+				count++;
+			}
+		}
+		if(count>=5) { 				//to check if there is any suitable place for change action for first column
+			if(ar0[0].equals("B")) {
+				return true;
+			}
+			else if(ar1[0].equals("B")) {
+				return true;
+			}
+			else if(ar2[0].equals("B")) {
+				return true;
+			}
+			else if(ar3[0].equals("B")) {
+				return true;
+			}
+			else if(ar4[0].equals("B")) {
+				return true;
+			}
+			else if(ar5[0].equals("B")) {
+				return true;
+			}	
+		}
+		count=0;
+		for(int i=0;i<=5;i++){   //to counts numbers of X in second column
+			if(v_ar1[i].equals("X")) {
+				count++;
+			}
+		}
+		if(count>=5) {      //to check if there is  any suitable place for change action for first column
+			if(v_ar1[0].equals("B")) {
+				return true;
+			} else if(v_ar1[5].equals("B")) {
+				return true;
+			}
+		}
+		count=0;
+		for(int i=0;i<=5;i++){  //to counts numbers of X in third column
+			if(v_ar2[i].equals("X")) {
+				count++;
+			}
+		}
+		if(count>=5) { 			//to check if there is any suitable place for change action for first column
+			if(v_ar2[0].equals("B")) {
+				return true;
+			} else if(v_ar2[5].equals("B")) {
+				return true;
+			}
+		}
+		count=0;
+		for(int i=0;i<=5;i++){ //to counts numbers of X in fourth column
+			if(v_ar3[i].equals("X")) {
+				count++;
+			}
+		}
+		if(count>=5) {			//to check if there is any suitable place for change action for first column
+			if(v_ar3[0].equals("B")) {
+				return true;
+			} else if(v_ar3[5].equals("B")) {
+				return true;
+			}
+		}
+		count=0;
+		for(int i=0;i<=5;i++){ //to counts numbers of X in fifth column
+			if(v_ar4[i].equals("X")) {
+				count++;
+			}
+		}
+		if(count>=5) {			//to check if there is any suitable place for change action for first column
+			if(v_ar4[0].equals("B")) {
+				return true;
+			} else if(v_ar4[5].equals("B")) {
+				return true;
+			}
+		}
+		count=0;
+		for(int i=0;i<=5;i++){ //to counts numbers of X in sixth column
+			if(v_ar5[i].equals("X")) {
+				count++;
+			}
+		}
+		if(count>=5) { 			//to check if there is any suitable place for change action for first column
+			if(ar0[5].equals("B")) {
+				return true;
+			}
+			else if(ar1[5].equals("B")) {
+				return true;
+			}
+			else if(ar2[5].equals("B")) {
+				return true;
+			}
+			else if(ar3[5].equals("B")) {
+				return true;
+			}
+			else if(ar4[5].equals("B")) {
+				return true;
+			}
+			else if(ar5[5].equals("B")) {
+				return true;
+			}	
+		}
+		return false;
+	}
+	//this method do vertical move action for computer if there is suitable move action
+	public static void ComputerMoveActionVertical(String[] ar0, String[] ar1, String[] ar2, String[] ar3,String[] ar4, String[] ar5) {
+		if((ar1[0].equals("O") && ar1[5].equals("O")) || (ar1[0].equals("O") && ar1[5].equals("X"))) {
+			MoveActionVertical(ar0,ar1,ar2,ar3,ar4,ar5,1,0,1,5);
+		}
+		else if(ar1[0].equals("X") && ar1[5].equals("O")) {
+			MoveActionVertical(ar0,ar1,ar2,ar3,ar4,ar5,1,5,1,0);
+		}
+
+		else if((ar2[0].equals("O") && ar2[5].equals("O")) || (ar2[0].equals("O") && ar2[5].equals("X"))) {
+			MoveActionVertical(ar0,ar1,ar2,ar3,ar4,ar5,2,0,2,5);
+		}
+		else if(ar2[0].equals("X") && ar2[5].equals("O")) {
+			MoveActionVertical(ar0,ar1,ar2,ar3,ar4,ar5,2,5,2,0);
+		}
+
+		else if((ar3[0].equals("O") && ar3[5].equals("O")) || (ar3[0].equals("O") && ar3[5].equals("X"))) {
+			MoveActionVertical(ar0,ar1,ar2,ar3,ar4,ar5,3,0,3,5);
+		}
+		else if(ar3[0].equals("X") && ar3[5].equals("O")) {
+			MoveActionVertical(ar0,ar1,ar2,ar3,ar4,ar5,3,5,3,0);
+		}
+
+		else if((ar4[0].equals("O") && ar4[5].equals("O")) || (ar4[0].equals("O") && ar4[5].equals("X"))) {
+			MoveActionVertical(ar0,ar1,ar2,ar3,ar4,ar5,4,0,4,5);
+		}
+		else if(ar4[0].equals("X") && ar4[5].equals("O")) {
+			MoveActionVertical(ar0,ar1,ar2,ar3,ar4,ar5,4,5,4,0);
+		}
+		else if((ar5[0].equals("O") && ar0[5].equals("O")) || (ar0[0].equals("O") && ar0[5].equals("X"))) {
+			MoveActionVertical(ar0,ar1,ar2,ar3,ar4,ar5,5,0,5,5);
+		}
+		else if(ar5[0].equals("X") && ar0[5].equals("O")) {
+			MoveActionVertical(ar0,ar1,ar2,ar3,ar4,ar5,5,5,5,0);
+		}	
+		else if((ar0[0].equals("O") && ar0[5].equals("O")) || (ar1[0].equals("O") && ar1[5].equals("X"))) {
+			MoveActionVertical(ar0,ar1,ar2,ar3,ar4,ar5,0,0,0,5);
+		}
+		else if(ar0[0].equals("X") && ar0[5].equals("O")) {
+			MoveActionVertical(ar0,ar1,ar2,ar3,ar4,ar5,0,5,0,0);
+		}
+	}
+	//to control user is winner or not
+	public static boolean control(String[] ar0, String[] ar1, String[] ar2, String[] ar3,String[] ar4, String[] ar5) {
+		boolean test=true;
+		int i=0;
+		while(i<=5 && test) {     //to check first line
+			test=ar0[i].equals("X");
+			i++;
+		}
+		if(test) {  //if user is winner print message and stop control method.
+			System.out.println("Player X win!");
+			return test;
+		}
+		i=0;
+		while(i<=5 && test) {   //to check second line
+			test=ar1[i].equals("X");
+			i++;
+		}
+		if(test) { //if user is winner print message and stop control method.
+			System.out.println("Player X win!");
+			return test;
+		}
+		i=0;
+		while(i<=5 && test) {   //to check third line
+			test=ar2[i].equals("X");
+			i++;
+		}
+		if(test) {  //if user is winner print message and stop control method.
+			System.out.println("Player X win!");
+			return test;
+		}
+		i=0;
+		while(i<=5 && test) {    //to check fourth line
+			test=ar3[i].equals("X");
+			i++;
+		}
+		if(test) {  //if user is winner print message and stop control method.
+			System.out.println("Player X win!");
+			return test;
+		}
+		i=0;
+		while(i<=5 && test) {   //to check fifth line
+			test=ar4[i].equals("X");
+			i++;
+		}
+		if(test) {  //if user is winner print message and stop control method.
+			System.out.println("Player X win!");
+			return test;
+		}
+		i=0;
+		while(i<=5 && test) {   //to check sixth line
+			test=ar5[i].equals("X");
+			i++;
+		}
+		if(test) {  //if user is winner print message and stop control method.
+			System.out.println("Player X win!");
+			return test;
+		}
+		for(int j=0;j<=5;j++) {   //to check columns
+			test=ar0[j].equals("X") && ar1[j].equals("X") && ar2[j].equals("X") && ar3[j].equals("X") && ar4[j].equals("X") && ar5[j].equals("X");
+			if(test) {  //if user is winner print message and stop control method.
+				System.out.println("Player X win!");
+				return test;
+			}
+		}
+		return false;
+	}
+	//to print current configuration
+	public static void print(String[] ar0, String[] ar1, String[] ar2, String[] ar3,String[] ar4, String[] ar5) {
+		for(int i=0;i<=5;i++) {      //to print first line
+			System.out.print(ar0[i]);
+		}
+		System.out.println();
+		for(int i=0;i<=5;i++) {		//to print second line
+			System.out.print(ar1[i]);
+		}
+		System.out.println();
+		for(int i=0;i<=5;i++) {      //to print third line
+			System.out.print(ar2[i]);
+		}
+		System.out.println();
+		for(int i=0;i<=5;i++) {			//to print fourth line
+			System.out.print(ar3[i]);
+		}
+		System.out.println();
+		for(int i=0;i<=5;i++) {			//to print fifth line
+			System.out.print(ar4[i]);
+		}
+		System.out.println();
+		for(int i=0;i<=5;i++) {			//to print sixth line
+			System.out.print(ar5[i]);
+		}
+		System.out.println();
+	}
+	//this method controls whether computer is winner or not
+	public static boolean controlSecond(String[] ar0, String[] ar1, String[] ar2, String[] ar3,String[] ar4, String[] ar5) {
+		boolean test=true;
+		int i=0;
+		while(i<=5 && test) {     //checks first line
+			test=ar0[i].equals("O");
+			i++;
+		}
+		if(test) {    //stops method if computer is winner
+			System.out.println("Player O win!");
+			return test;
+		}
+		while(i<=5 && test) {		//checks second line
+			test=ar1[i].equals("O");
+			i++;
+		}
+		if(test) {			//stops method if computer is winner
+			System.out.println("Player O win!");
+			return test;
+		}
+		while(i<=5 && test) {		//checks third line
+			test=ar2[i].equals("O");
+			i++;
+		}	
+		if(test) {		//stops method if computer is winner
+			System.out.println("Player O win!");
+			return test;
+		}
+		while(i<=5 && test) {  //checks fourth line
+			test=ar3[i].equals("O");
+			i++;
+		}
+		if(test) {		//stops method if computer is winner
+			System.out.println("Player O win!");
+			return test;
+		}
+		while(i<=5 && test) {		//checks fifth line
+			test=ar4[i].equals("O");
+			i++;
+		}
+		if(test) {		//stops method if computer is winner
+			System.out.println("Player O win!");
+			return test;
+		}
+		while(i<=5 && test) {		//checks sixth line
+			test=ar5[i].equals("O");
+			i++;
+		}
+		if(test) {		//stops method if computer is winner
+			System.out.println("Player O win!");
+			return test;
+		}
+		for(int j=0;j<=5;j++) {		//checks columns
+			test=ar0[j].equals("O") && ar1[j].equals("O") && ar2[j].equals("O") && ar3[j].equals("O") && ar4[j].equals("O") && ar5[j].equals("O");
+			if(test) { //stops method if computer is winner
+				System.out.println("Player O win!");
+				return test;
+			}
+		}
+		return false;
+	}
+}
